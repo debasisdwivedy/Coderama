@@ -211,7 +211,6 @@ async def execute_shell_code(shell_file_path:str)->dict:
                 f"chmod +x {shell_file_path} && ./{shell_file_path}"
             ]
             logger.info(f"   Command to be executed : {cmd}")
-            #result = subprocess.run(cmd,capture_output=True, text=True, check=True)
             proc = await asyncio.create_subprocess_exec(*cmd,
                                                         stdout=asyncio.subprocess.PIPE,
                                                         stderr=asyncio.subprocess.PIPE,
@@ -223,7 +222,6 @@ async def execute_shell_code(shell_file_path:str)->dict:
             script_path = os.path.join(WORKSPACE_DIR, shell_file_path)
             cmd = ["bash", "-c", f"chmod +x {script_path} && ./{shell_file_path}"]
             logger.info(f"   Command to be executed : {cmd}")
-            #result = subprocess.run(cmd,cwd=WORKSPACE_DIR,capture_output=True, text=True, check=True)
             proc = await asyncio.create_subprocess_exec(*cmd,
                                                         stdout=asyncio.subprocess.PIPE,
                                                         stderr=asyncio.subprocess.PIPE,
