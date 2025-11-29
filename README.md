@@ -44,24 +44,6 @@ The `software development agent` is a combination of multiple agents working tog
 
 ---
 
-## 🚀 **DEMO**
-
-### **Option 1: Demo (Recommended)**
-👉 **[Open HuggingFace Space](https://huggingface.co/spaces/MCP-1st-Birthday/CODERAMA)**
-
-1. Fill in all the details in the left panel
-2. Chat with the Agent. Assign it a project like `Create me an application to calculate factorial of a number`
-3. Watch it in action
-
-## 🎬 **Demo Video**
-
-### **[▶️ Watch Full Demo (2 minutes)](https://www.youtube.com/watch?v=VoHAn-7y5kc)**  
-
-## **𝕏 Post**
-
-### **[▶️ Social ](https://x.com/debasis_dwivedy/status/1994336701318066616)**
-
-
 ## Setup and Deployment
 
 ### Prerequisites
