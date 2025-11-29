@@ -328,31 +328,3 @@ async def initialized_coordinator_agent() -> Agent:
         root_agent = coordinator_agent_instance.create_agent()
 
     return root_agent
-
-# def _get_initialized_coordinator_agent_sync() -> Agent:
-#     """Synchronously creates and initializes the CoordinatorAgent."""
-
-#     async def _async_main() -> Agent:
-#         coordinator_agent_instance = await CoordinatorAgent.create(
-#             remote_agent_addresses=[
-#                 os.getenv('REQUIREMENT_GATHERING_AGENT_URL', REQUIREMENT_GATHERING_AGENT_URL),
-#                 os.getenv('PROJECT_PLANNER_AGENT_URL', PROJECT_PLANNER_AGENT_URL),
-#                 os.getenv('SOFTWARE_DEVELOPMENT_AGENT_URL', PROJECT_PLANNER_AGENT_URL),
-#                 # os.getenv('POLICY_ENFORCEMENT_AGENT_URL', POLICY_ENFORCEMENT_AGENT_URL),
-#             ]
-#         )
-#         return coordinator_agent_instance.create_agent()
-
-#     try:
-#         return asyncio.run(_async_main())
-#     except RuntimeError as e:
-#         if 'asyncio.run() cannot be called from a running event loop' in str(e):
-#             logger.info(
-#                 f'Warning: Could not initialize CoordinatorAgent with asyncio.run(): {e}. '
-#                 'This can happen if an event loop is already running (e.g., in Jupyter). '
-#                 'Consider initializing CoordinatorAgent within an async function in your application.'
-#             )
-#         raise
-
-
-#root_agent =  initialized_coordinator_agent()
