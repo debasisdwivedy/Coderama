@@ -422,7 +422,7 @@ async def main():
                                     show_label=True,
                                     info="The Project Directory Name like `My_Project` OR Absolute Path to a Folder like `/tmp/My_Project` for linux"
                                     )
-                timeout = gr.Slider(minimum=0, maximum=1000, value=600, step=1, label="Timeout Duration in Seconds")
+                timeout = gr.Slider(minimum=600, maximum=1200, value=900, step=1, label="Timeout Duration in Seconds")
                 with gr.Row():
                     container_image_tag = gr.Textbox(label="Dockerhub Image",
                                         type="text",
