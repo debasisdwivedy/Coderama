@@ -1,0 +1,10 @@
+pyproject.toml
+src/__init__.py
+src/coderama_server.py
+src/main.py
+src/coderama.egg-info/PKG-INFO
+src/coderama.egg-info/SOURCES.txt
+src/coderama.egg-info/dependency_links.txt
+src/coderama.egg-info/entry_points.txt
+src/coderama.egg-info/requires.txt
+src/coderama.egg-info/top_level.txt

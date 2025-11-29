@@ -1,0 +1,7 @@
+google-adk==1.19.0
+a2a-sdk==0.3.16
+gradio==6.0.1
+python-dotenv>=1.2.1
+litellm==1.79.3
+structlog==25.5.0
+./mcp_server
