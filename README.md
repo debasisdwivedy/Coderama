@@ -101,7 +101,7 @@ SANDBOX_AVAILABLE = "TRUE" 																	# This referes to the availabilty of
 
 
 ### **Known Issues:**  
-1. **TIMEOUT:** Currently the timeout is set to 600 secs i.e., 10 mins by default. Sometimes a `sprint` may take longer than that. Please increase the timeout if the `agent` fails.  
+1. **TIMEOUT:** Currently the timeout is set to 900 secs by default. Sometimes a `sprint` may take longer than that. Please increase the timeout if the `agent` fails.  
 2. **Sandbox env:** Sometimes `sandbox` environment can create some problems. If the project creation fails repeatedly for sandbox, turn it off.  
 3. **OS:** Only Unix like operating system is natively supported.For windows please install `WSL` or run it in `sandbox` mode.  
 
