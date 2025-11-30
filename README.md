@@ -83,18 +83,18 @@ An env file also can be created if not using UI as below:
 
 ```
 PROVIDER="litellm" 																			#ONLY GOOGLE and LITELLM(for any other model) Supported
-MODEL=""  																					#topenai/gpt-5-mini;ogether_ai/openai/gpt-oss-120b
+MODEL=""  																					#gemini-2.5-flash;openai/gpt-5-mini;together_ai/openai/gpt-oss-120b
 GOOGLE_GENAI_USE_VERTEXAI=0
-GOOGLE_API_KEY=""
+GOOGLE_API_KEY=""                                     # Google/Gemini API key
 GOOGLE_GENAI_USE_VERTEXAI="FALSE"
-LITE_LLM_TOKEN=""
-WORKSPACE_DIR = ""
+LITE_LLM_TOKEN=""                                     # API key from the provider
+WORKSPACE_DIR = ""                                    # The directory where the project will be created
 DOCKER_IMAGE_TAG = "" 																		#arm64v8/python:3.12
 PLATFORM = "" 																	 			# ONLY REQUIRED FOR ARM BASED PROCESSOR like 'linux/arm64'
 TIMEOUT = '600' 																			# TIMEOUT in seconds.
-REQUIREMENT_GATHERING_AGENT_URL = ""														# The remote Requirement Gathering agent URI : http://localhost:10001
+REQUIREMENT_GATHERING_AGENT_URL = "http://localhost:10001"							# The remote Requirement Gathering agent URI : http://localhost:10001
 PROJECT_PLANNER_AGENT_URL = "http://localhost:10002"										# The remote Project planning agent URI : http://localhost:10002
-SOFTWARE_DEVELOPMENT_AGENT_URL = "http://localhost:10003"									# The remote Software Development agent URI : http://localhost:10003
+SOFTWARE_DEVELOPMENT_AGENT_URL = "http://localhost:10003"								# The remote Software Development agent URI : http://localhost:10003
 LOGGING_LEVEL = "INFO"  																	# COULD BE INFO/DEBUG/ERROR. Default is INFO
 SANDBOX_AVAILABLE = "TRUE" 																	# This referes to the availabilty of Docker in the host system to execute code.
 ```
