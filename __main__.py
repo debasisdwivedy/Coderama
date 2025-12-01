@@ -109,7 +109,7 @@ async def init_agents():
     logger.info(f"=================INITIALIZING CO ORDINATOR AGENT==============")
     try:
         logger.info(f"=================INITIALIZING REQUIREMENT GATHERING AGENT==============")
-        with open("requirement_gathering.log", "w") as log_file:
+        with open("logs/requirement_gathering.log", "w") as log_file:
             process = subprocess.Popen(
                 [sys.executable, "-m", "Requirement_Gathering"],
                 stdout=log_file,
@@ -131,7 +131,7 @@ async def init_agents():
     await asyncio.sleep(5)
     try:
         logger.info(f"=================INITIALIZING PROJECT PLANNING AGENT==============")
-        with open("project_planning.log", "w") as log_file:
+        with open("logs/project_planning.log", "w") as log_file:
             process = subprocess.Popen(
                 [sys.executable, "-m", "Project_Planning"],
                 stdout=log_file,
@@ -153,7 +153,7 @@ async def init_agents():
     await asyncio.sleep(5)
     try:
         logger.info(f"=================INITIALIZING SOFTWARE DEVELOPMENT AGENT==============")
-        with open("software_development.log", "w") as log_file:
+        with open("logs/software_development.log", "w") as log_file:
             process = subprocess.Popen(
                 [sys.executable, "-m", "Develop_Software"],
                 stdout=log_file,
@@ -496,10 +496,14 @@ async def main():
                         )
                         sandbox = gr.Checkbox(label="Enable Sandbox?", value=False,interactive=True)
                     with gr.Row():
-                        log_content_display = gr.Textbox(
-                            label="Log Content", 
-                            lines=4, 
-                            interactive=False
+                        # File Explorer
+                        log_explorer = gr.FileExplorer(
+                            glob='*.log',
+                            root_dir=f"{os.getcwd()}/logs",
+                            height=130,
+                            label="Log Files",
+                            interactive=True,
+                            file_count="single"
                         )
                 with gr.Column(scale=5):
                     chat_interface = gr.ChatInterface(
@@ -540,6 +544,17 @@ async def main():
                         download_btn = gr.Button("Download",size="md",min_width=20)
                     download_output = gr.File(visible=True,height=80,min_width=50,interactive=True)
                     download_btn.click(zip_and_download, outputs=download_output)
+
+            log_content_display = gr.Textbox(
+                            label="Log Content", 
+                            lines=10, 
+                            interactive=False,
+                        )
+            log_explorer.change(
+                fn=read_file, 
+                inputs=log_explorer, 
+                outputs=log_content_display
+            )
 
     print('Launching Gradio interface...')
     demo.queue().launch(

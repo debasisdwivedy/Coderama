@@ -1,0 +1,6 @@
+WARNING:google_adk.google.adk.runners:App name mismatch detected. The runner is configured with app name "Project_Manager", but the root agent was loaded from "/Users/debasis/Downloads/Coderama/.venv/lib/python3.12/site-packages/google/adk/agents", which implies app name "agents".
+INFO:     Started server process [85059]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://localhost:10002 (Press CTRL+C to quit)
+INFO:     ::1:60281 - "GET /.well-known/agent-card.json HTTP/1.1" 200 OK
