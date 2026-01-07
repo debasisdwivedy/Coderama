@@ -53,6 +53,28 @@ from google.genai import types
 import gradio as gr
 from pprint import pformat
 
+# Import autonomy integration
+try:
+    from autonomy_integration import (
+        get_autonomy_system,
+        update_workspace,
+        format_dashboard_html,
+        format_security_html,
+        format_recommendations_html,
+        format_audit_log_html,
+        create_checkpoint,
+        rollback_to_checkpoint,
+        get_checkpoints,
+        record_task_completion,
+        SelfHealingWrapper,
+        get_agent_wrapper
+    )
+    AUTONOMY_AVAILABLE = True
+    logger.info("Autonomy system loaded successfully")
+except ImportError as e:
+    AUTONOMY_AVAILABLE = False
+    logger.warning(f"Autonomy system not available: {e}")
+
 
 
 APP_NAME = 'coordinator_app'
@@ -322,6 +344,14 @@ async def get_response_from_agent(
                 yield gr.ChatMessage(role="assistant", content="❌ Please enter a Project Directory Name.")
                 return
 
+        # Update autonomy system with new workspace
+        if AUTONOMY_AVAILABLE:
+            try:
+                update_workspace(WORKSPACE_DIR)
+                create_checkpoint("Project initialization")
+            except Exception as e:
+                logger.warning(f"Failed to update autonomy workspace: {e}")
+
     if container_image_tag and container_image_tag.strip() != "":
         os.environ["DOCKER_IMAGE_TAG"] = container_image_tag.strip()
     else:
@@ -409,6 +439,23 @@ async def get_response_from_agent(
                 break
     except Exception as e:
         logger.error(f'Error in get_response_from_agent (Type: {type(e)}): {e}')
+
+        # Attempt self-healing if available
+        if AUTONOMY_AVAILABLE:
+            try:
+                system = get_autonomy_system()
+                healing_result = asyncio.get_event_loop().run_until_complete(
+                    system.handle_error(e, "coordinator", {"message": message[:200]})
+                )
+                if healing_result.get("healed"):
+                    yield gr.ChatMessage(
+                        role='assistant',
+                        content='⚡ An error occurred but was automatically recovered. Please try again.',
+                    )
+                    return
+            except Exception as heal_error:
+                logger.error(f'Self-healing failed: {heal_error}')
+
         yield gr.ChatMessage(
             role='assistant',
             content='An error occurred while processing your request. Please check the server logs for details.',
@@ -546,15 +593,113 @@ async def main():
                     download_btn.click(zip_and_download, outputs=download_output)
 
             log_content_display = gr.Textbox(
-                            label="Log Content", 
-                            lines=10, 
+                            label="Log Content",
+                            lines=10,
                             interactive=False,
                         )
             log_explorer.change(
-                fn=read_file, 
-                inputs=log_explorer, 
+                fn=read_file,
+                inputs=log_explorer,
                 outputs=log_content_display
             )
+
+        # Autonomy Dashboard Tab
+        if AUTONOMY_AVAILABLE:
+            with gr.Tab("🤖 Autonomy"):
+                gr.Markdown("""
+                ## Autonomous Self-Healing System
+                Real-time monitoring of the autonomous development platform.
+                """)
+
+                with gr.Row():
+                    refresh_dashboard_btn = gr.Button("🔄 Refresh Dashboard", size="sm")
+
+                with gr.Row():
+                    dashboard_html = gr.HTML(
+                        value=format_dashboard_html(),
+                        label="System Dashboard"
+                    )
+
+                with gr.Row():
+                    with gr.Column():
+                        security_html = gr.HTML(
+                            value=format_security_html(),
+                            label="Security Status"
+                        )
+                        run_security_scan_btn = gr.Button("🔐 Run Security Scan", size="sm")
+
+                    with gr.Column():
+                        recommendations_html = gr.HTML(
+                            value=format_recommendations_html(),
+                            label="Recommendations"
+                        )
+
+                with gr.Row():
+                    audit_html = gr.HTML(
+                        value=format_audit_log_html(),
+                        label="Audit Log"
+                    )
+
+                with gr.Row():
+                    with gr.Column():
+                        gr.Markdown("### 💾 Checkpoint Management")
+                        checkpoint_desc = gr.Textbox(
+                            label="Checkpoint Description",
+                            placeholder="Enter checkpoint description...",
+                            lines=1
+                        )
+                        create_checkpoint_btn = gr.Button("Create Checkpoint", size="sm")
+                        checkpoint_status = gr.Textbox(label="Status", interactive=False, lines=1)
+
+                    with gr.Column():
+                        gr.Markdown("### ⏪ Rollback")
+                        rollback_btn = gr.Button("Rollback to Last Checkpoint", size="sm")
+                        rollback_status = gr.Textbox(label="Rollback Status", interactive=False, lines=1)
+
+                # Event handlers
+                def refresh_all():
+                    return (
+                        format_dashboard_html(),
+                        format_security_html(),
+                        format_recommendations_html(),
+                        format_audit_log_html()
+                    )
+
+                def do_security_scan():
+                    return format_security_html()
+
+                def do_create_checkpoint(desc):
+                    if desc.strip():
+                        success = create_checkpoint(desc)
+                        return "✅ Checkpoint created" if success else "❌ Failed to create checkpoint"
+                    return "❌ Please enter a description"
+
+                def do_rollback():
+                    result = rollback_to_checkpoint()
+                    if result.get("success"):
+                        return f"✅ {result.get('message', 'Rollback successful')}"
+                    return f"❌ {result.get('message', 'Rollback failed')}"
+
+                refresh_dashboard_btn.click(
+                    fn=refresh_all,
+                    outputs=[dashboard_html, security_html, recommendations_html, audit_html]
+                )
+
+                run_security_scan_btn.click(
+                    fn=do_security_scan,
+                    outputs=[security_html]
+                )
+
+                create_checkpoint_btn.click(
+                    fn=do_create_checkpoint,
+                    inputs=[checkpoint_desc],
+                    outputs=[checkpoint_status]
+                )
+
+                rollback_btn.click(
+                    fn=do_rollback,
+                    outputs=[rollback_status]
+                )
 
     print('Launching Gradio interface...')
     demo.queue().launch(
