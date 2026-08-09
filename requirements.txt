@@ -1,6 +1,6 @@
 google-adk==1.28.1
 a2a-sdk==0.3.16
-gradio==6.7.0
+gradio==6.15.1
 python-dotenv>=1.2.1
 litellm==1.83.7
 structlog==25.5.0
